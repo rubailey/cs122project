@@ -1,0 +1,22 @@
+<html>
+<head>
+    <title>Search</title>
+</head>
+<body>
+    {% if error %}
+        <p style="color: red;"> Please submit a search term.</p>
+    {% endif %}
+    <form action="/search/" method="get">
+        <p> Cusine: <input type="text" name="Cusine"</p>
+        <p> Menu Item: <input type="text" name="Menu_item"</p>
+        <p> Address: <input type="text" name="Address"</p>
+        <p> Where to eat: </p>
+            <input type="checkbox" name="Food_trucks" value ="Food_trucks" checked> Food Trucks <br> 
+            <input type="checkbox" name="Dining_hall" value="Dining_hall" checked> Dining Hall<br> 
+            <input type="checkbox" name="Restaurants" value="Restaurants" checked> Restaurants<br>
+            <input type="checkbox" name="inspection" Value=True> Failed Recent Inspeciton?<br>
+
+        <input type="submit" value="Search">
+    </form>
+</body>
+</html>

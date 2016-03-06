@@ -1,0 +1,18 @@
+<html>
+<body>
+    <p> You searched for: <strong> {{ query }}</strong> near {{ location }}</p>
+
+    {% if food %}
+        <p>Found The Following Lunch Options: </p>.
+        <ul>
+            {%for rest in food %}
+            <li>{{ food }} <li>
+            {% endfor %}
+        <ul>
+    {% else %}
+        <p> No Local Restauraunts matched your search criteria. </p>
+    {% endif %}
+
+
+</body>
+</html>
