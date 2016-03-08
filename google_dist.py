@@ -8,4 +8,4 @@ def get_distance(add1, add2):
     distdict = json.loads(page)
     dist = distdict['rows'][0]['elements'][0]['distance']['text']
     time = distdict['rows'][0]['elements'][0]['duration']['text']
-    print(dist, time)
+    return (dist, time)
