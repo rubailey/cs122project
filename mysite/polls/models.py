@@ -58,6 +58,7 @@ def find_restaurants(address, cuisine):
     '''
 
     yelpapi.yelp_search(address, term=cuisine)
-    #connection_yelp = sqlite3.connect("yelp_database")
-    #db = connection_yelp.cursor()
-
+    connection_yelp = sqlite3.connect("yelp_database")
+    db = connection_yelp.cursor()
+    r = db.execute('SELECT yelp_results.address, healthfails.Risk FROM yelp_results LEFT OUTER JOIN healthfails ON yelp_results.address=healthfails."Address" COLLATE NOCASE;')
+    return r.fetchall()

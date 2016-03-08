@@ -36,7 +36,7 @@ def yelp_search(location, term=None, coordinates=False):
     else:
         results = client.search(location, **params)
 
-    drop_yelp_table("yelp_results")
+    #drop_yelp_table("yelp_results")
     table_string = "CREATE TABLE yelp_results (name varchar(50), latitude int, longitude REAL, rating real, address varchar(50), city varchar(25), state varchar(3), zip_code integer, phone_number integer, distance varchar(10), walking_time varchar(10));"
 
     connection_yelp = sqlite3.connect("yelp_database")
@@ -69,7 +69,7 @@ def yelp_search_food_trucks(location, term=None):
 
     results = client.search("Chicago", **params)
 
-    drop_yelp_table("yelp_food_trucks")
+    #drop_yelp_table("yelp_food_trucks")
     table_string = "CREATE TABLE yelp_food_trucks (name varchar(50), rating real, phone_number integer, distance varchar(10), walking_time varchar(10), arrive_time varchar(5), leave_time varchar(5));"
 
     connection_yelp = sqlite3.connect("yelp_database")
