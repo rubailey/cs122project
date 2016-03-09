@@ -14,8 +14,7 @@ def Food_search(search_params):
     '''
     rv = []
 
-    drop()
-    
+    #drop()
     if search_params['Address'] == None:
         address = DEFAULT_ADDRESS
     else:
@@ -46,49 +45,72 @@ def Food_search(search_params):
                 for line in f:
                     name, url = line.strip().split(',')
                     url = url.strip()
-                    rest_dict[name] = (url)
+                    truck_dict[name] = (url)
         
     if 'Restaurants' in search_params['Types']:
         header, options = find_restaurants(address, cuisine, walk_time, inspection)
         options_r = [header]
         print(options)
         print(type(options))
+        appended_list = []
         for op in options:
-            mini_list = []
-            for i in range(len(op)):
-                print (op[i])
-                mini_list.append(op[i])
-            if not menu_item == None:
-                print("tamogachi")
-                menu = menu_scraper.scrape_rest(rest_dict, op[1])
-                print("here")
-                if type(menu) == str:
-                    print("here")
-                    mini_list.append(menu)
-                else:
-                    items = search_menu(menu, menu_item)
-                    print("here")
-                    if items == []:
-                        print("here")
-                        items = "No Menu Items Matched"
-                    elif len(items) > 5:
-                        print("here")
-                        items = items[:5]
-                    mini_list.append(items)
-            options_r.append(mini_list)
+            if not op[0] in appended_list:
+                mini_list = []
+                for i in range(len(op)):
+                    print (op[i])
+                    mini_list.append(op[i])
+                if not menu_item == None:
+                    menu = menu_scraper.scrape_rest(rest_dict, op[1])
+                    if type(menu) == str:
+                        mini_list.append(menu)
+                    else:
+                        items = search_menu(menu, menu_item)
+                        if items == []:
+                            items = "No Menu Items Matched"
+                        elif len(items) > 5:
+                            items = items[:5]
+                        mini_list.append(items)
+                options_r.append(mini_list)
+                appended_list.append(op[0])
         if not menu_item == None:
             options_r[0].append('Menu Items')
 
 
         rv.append(options_r)
 
-    #if 'Food_trucks' in search_params:
-    #    for option in find_restaurants(address, cuisine, type='f'):
-    #        options.append(option)
+    if 'Food_trucks' in search_params['Types']:
+        header, options = find_food_trucks(address, cuisine, walk_time)
+        options_ft = [header]
+        appended_list = []
+        for op in options:
+            if not op[0] in appended_list:
+                mini_list = []
+                for i in range(len(op)):
+                    mini_list.append(op[i])
+                if not menu_item == None:
+                    menu = menu_scraper.scrape_rest(truck_dict, op[0])
+                    if type(menu) == str:
+                        mini_list.append(menu)
+                    else:
+                        items = search_menu(menu, menu_item)
+                        if items == []:
+                            items = "No Menu Items Matched"
+                        elif len(items) > 5:
+                            items = items[:5]
+                        mini_list.append(items)
+                options_ft.append(mini_list)
+                appended_list.append(op[0])
+        if not menu_item == None:
+            options_ft[0].append('Menu Items')
+        rv.append(options_ft)
+
+
+
+
+        
 
     if 'Dining_hall' in search_params:
-        for option in []:
-            break
+        good = 'meme'
 
     return rv
 
@@ -119,24 +141,44 @@ def find_restaurants(address, cuisine, walk_time, inspection, rating=None):
     db = connection_yelp.cursor()
     
     selectline = 'SELECT yelp_results.name, yelp_results.address, yelp_results.rating, yelp_results.phone_number, yelp_results.walking_time'
-    header = ['Name', 'Address', 'Rating', 'Phone', 'Walking Time']
+    header = ['Restaurants', 'Address', 'Rating', 'Phone', 'Walking Time']
     fromline = ' FROM yelp_results'
-    whereline = ' WHERE yelp_results.walking_time < ?;'
+    whereline = ' WHERE yelp_results.walking_time < ?'
     if inspection:
         selectline += ', healthfails.Risk'
         header.append('Risk')
         fromline += ' LEFT OUTER JOIN healthfails ON yelp_results.address=healthfails.Address COLLATE NOCASE'
 
+    end_list = [walk_time]
+    if not rating == None:
+        whereline += ' and yelp_results.rating >= ?'
+        end_list.append(rating)
     print(selectline + fromline + whereline, [walk_time])
-    r = db.execute(selectline + fromline + whereline, [walk_time])
+    r = db.execute(selectline + fromline + whereline + ';', end_list)
     tuple_list = r.fetchall()
-    print(tuple_list)
+    yelpapi.drop_yelp_table("yelp_results")
     db.close()
     return (header,tuple_list)
 
-def find_food_trucks(address, cuisine):
+def find_food_trucks(address, cuisine, walking_time, rating = None):
     yelpapi.yelp_search_food_trucks(address, cuisine)
+    connection_yelp = sqlite3.connect("yelp_database")
+    db = connection_yelp.cursor()
 
+    selectline = 'SELECT yelp_food_trucks.name, yelp_food_trucks.rating, yelp_food_trucks.phone_number, yelp_food_trucks.arrive_time, yelp_food_trucks.leave_time'
+    header = ['Food Trucks', 'Rating', 'Phone', 'Arrive Time', 'Depart Time']
+    fromline = ' FROM yelp_food_trucks'
+    whereline = ' WHERE yelp_food_trucks.walking_time < ?'
+    end_list = [walking_time]
+    if not rating == None:
+        whereline += ' and yelp_food_trucks.rating >= ?'
+        end_list.append(rating)
+    print(selectline + fromline + whereline + ';', end_list)
+    r=db.execute(selectline + fromline + whereline + ';', end_list)
+    tuple_list = r.fetchall()
+    db.close()
+    yelpapi.drop_yelp_table("yelp_food_trucks")
+    return (header, tuple_list)
 
 def find_dining_halls(address):
     return False
