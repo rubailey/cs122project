@@ -6,7 +6,7 @@ import yelpapi
 import menu_scraper
 from dining_scraper import search_menu
 
-DEFUALT_WALK_TIME = 25
+DEFAULT_WALK_TIME = 25
 DEFAULT_ADDRESS = '1100 E 57th St, Chicago, IL'
 def Food_search(search_params):
     '''
@@ -29,8 +29,8 @@ def Food_search(search_params):
     walk_time = search_params['walk_time']
 
     inspection = search_params['inspection']
-    if walk_time == None:
-        walk_time = DEFUALT_WALK_TIME = 25
+    if walk_time == False:
+        walk_time = DEFAULT_WALK_TIME
 
     if not menu_item == None:
         if 'Restaurants' in search_params['Types']:
@@ -127,11 +127,20 @@ def find_restaurants(address, cuisine, walk_time, inspection, rating=None):
         header.append('Risk')
         fromline += ' LEFT OUTER JOIN healthfails ON yelp_results.address=healthfails.Address COLLATE NOCASE'
 
+    print(selectline + fromline + whereline, [walk_time])
     r = db.execute(selectline + fromline + whereline, [walk_time])
     tuple_list = r.fetchall()
+    print(tuple_list)
+    db.close()
     return (header,tuple_list)
+
+def find_food_trucks(address, cuisine):
+    yelpapi.yelp_search_food_trucks(address, cuisine)
+
+
+def find_dining_halls(address):
+    return False
 
 def drop():
     yelpapi.drop_yelp_table("yelp_results")
 
-#def find_food_trucks(address, cuisine):
