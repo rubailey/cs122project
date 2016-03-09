@@ -73,10 +73,10 @@ def yelp_search_food_trucks(location, term=None):
 
     results = client.search("Chicago", **params)
 
-    #print(results, "Here")
+    print(results, "Here")
     #print(type(results), "There")
 
-    drop_yelp_table("yelp_food_trucks")
+    #drop_yelp_table("yelp_food_trucks")
     table_string = "CREATE TABLE yelp_food_trucks (name varchar(50), rating real, phone_number integer, distance varchar(10), walking_time int, arrive_time varchar(5), leave_time varchar(5));"
 
     connection_yelp = sqlite3.connect("yelp_database")
@@ -103,7 +103,6 @@ def yelp_search_food_trucks(location, term=None):
     connection_yelp.commit()
     r = db.execute("Select * From yelp_food_trucks")
     
-    return(r.fetchall())
 
 def drop_yelp_table(table):
     '''
