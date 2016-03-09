@@ -67,13 +67,20 @@ def yelp_search_food_trucks(location, term=None):
     the dictionary of parameters can have keys "term" and the 
     value will be a string with keywords for the search (eg sushi, burgers)
     '''
+
     params = {"category_filter":"foodtrucks"}
     if not term == None:
         params["term"] = term
 
-    results = client.search("Chicago", **params)
+    results_list = []
+    results_list.append(client.search("Chicago", **params))
+    iterations = round(results_list[0].total/20 +.4999999)
+   
+    for num in range(1,iterations):
+        params['offset'] = 20*num
+        results_list.append(client.search("Chicago", **params))
 
-    print(results, "Here")
+    #print(results, "Here")
     #print(type(results), "There")
 
     #drop_yelp_table("yelp_food_trucks")
@@ -91,17 +98,20 @@ def yelp_search_food_trucks(location, term=None):
         walking_time = 60*int(walking_time.split()[0]) + int(walking_time.split()[2])
     trucks_today, truck_dict = scrap_food_trucks()
     #print(type(results.businesses), "Everywhere")
-    for i in range(len(results.businesses)):
-        #print(i)
-        #print (results.businesses[i].name)
-        key = reasonable_permutation(results.businesses[i].name, trucks_today)
-        if not key == None:
-            arrive, leave = truck_dict[key]
-            one_line = [results.businesses[i].name, str(results.businesses[i].rating),results.businesses[i].phone, distance, walking_time, arrive, leave]
-            db.execute("Insert into yelp_food_trucks Values (?,?,?,?,?,?,?);", one_line)
+    for results in results_list:
+        for i in range(len(results.businesses)):
+            #print(i)
+            #print (results.businesses[i].name)
+            key = reasonable_permutation(results.businesses[i].name, trucks_today)
+            if not key == None:
+                arrive, leave = truck_dict[key]
+                one_line = [results.businesses[i].name, str(results.businesses[i].rating),results.businesses[i].phone, distance, walking_time, arrive, leave]
+                db.execute("Insert into yelp_food_trucks Values (?,?,?,?,?,?,?);", one_line)
             
     connection_yelp.commit()
     r = db.execute("Select * From yelp_food_trucks")
+    #
+    return r.fetchall()
     
 
 def drop_yelp_table(table):
