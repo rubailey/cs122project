@@ -28,7 +28,8 @@ def get_webpage(url, encoder):
     '''
     Fetches a webpage and reads it into BeautifulSoup
     '''
-    r = requests.get(url)
+    headers = { 'User-Agent': 'Mozilla/5.0 (Windows NT 6.0; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0' }
+    r = requests.get(url, headers=headers)
     r.encoding = encoder
     page = r.text
     soup = bs4.BeautifulSoup(page, "html5lib")
@@ -40,7 +41,10 @@ def find_dining_menu_items(hall, meal):
     '''
     url = make_url(hall, meal)
     soup = get_webpage(url, "utf-8")
-    items = soup.find_all('p', class_="mini freeze")
+    f = open('test2.txt', "w")
+    f.write(soup.prettify())
+    f.close()
+    items = soup.find_all('div', class_="menu-name")
     menu = []
     for item in items:
         nicer_item = item.text.strip()

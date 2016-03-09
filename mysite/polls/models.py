@@ -4,7 +4,8 @@ import sys
 sys.path.insert(0, '/home/student/cs122project/mysite')
 import yelpapi
 import menu_scraper
-from dining_scraper import search_menu
+import dining_scraper
+import google_dist
 
 DEFAULT_WALK_TIME = 25
 DEFAULT_ADDRESS = '1100 E 57th St, Chicago, IL'
@@ -64,7 +65,7 @@ def Food_search(search_params):
                     if type(menu) == str:
                         mini_list.append(menu)
                     else:
-                        items = search_menu(menu, menu_item)
+                        items = dining_scraper.search_menu(menu, menu_item)
                         if items == []:
                             items = "No Menu Items Matched"
                         elif len(items) > 5:
@@ -92,7 +93,7 @@ def Food_search(search_params):
                     if type(menu) == str:
                         mini_list.append(menu)
                     else:
-                        items = search_menu(menu, menu_item)
+                        items = dining_scraper.search_menu(menu, menu_item)
                         if items == []:
                             items = "No Menu Items Matched"
                         elif len(items) > 5:
@@ -109,8 +110,9 @@ def Food_search(search_params):
 
         
 
-    if 'Dining_hall' in search_params:
-        good = 'meme'
+    if 'Dining_hall' in search_params['Types']:
+        header, options = find_dining_halls(address)
+        
 
     return rv
 
@@ -180,8 +182,27 @@ def find_food_trucks(address, cuisine, walking_time, rating = None):
     yelpapi.drop_yelp_table("yelp_food_trucks")
     return (header, tuple_list)
 
+def get_dining_hall(hall, address):
+    addresses = {"Bartlett": "5640 S University Ave", "South": "6025 S Ellis Ave"}
+    menu = dining_scraper.find_dining_menu_items(hall, "Lunch")
+    if menu == []:
+        menu = dining_scraper.find_dining_menu_items(hall, "Brunch")
+    dh_addr = addresses[hall] + ", Chicago"
+    dist, time = google_dist.get_distance(address, dh_addr)
+    if not 'hour' in walking_time:
+        time = int(time.split()[0])
+    else:
+        time = 60*int(walking_time.split()[0]) + int(walking_time.split()[2])
+           
+    return [hall + " Dining Hall", addresses[hall], time]
+
 def find_dining_halls(address):
-    return False
+    header = ['Dining Hall', 'Address', 'Walking Time']
+    tuple_list = []
+    tuple_list.append(get_dining_hall("Bartlett", address))
+    tuple_list.append(get_dining_hall("South", address))
+    return (header, tuple_list)
+
 
 def drop():
     yelpapi.drop_yelp_table("yelp_results")
