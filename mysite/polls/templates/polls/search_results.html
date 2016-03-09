@@ -2,18 +2,23 @@
 <body>
     <p> You searched for: <strong> {{ query }}</strong> near {{ location }}</p>
 
-    input type="submit" value="Search Again"
+    <input type="submit" value="Search Again">
 
-    {% if food %}
-        <p>Found The Following Lunch Options: </p>.
-        <ul>
-            {%for rest in food %}
-            <li>{{ food }} <li>
+
+    <p>Found The Following Lunch Options: </p>.
+    {% for table in food %}
+    <table style="width:100%">
+        {% for line in table %}
+        <tr> 
+            {% for item in line %}
+            <td> {{ item }} </td>
             {% endfor %}
-        <ul>
-    {% else %}
-        <p> No Local Restauraunts matched your search criteria. </p>
-    {% endif %}
+        </tr>
+        {% endfor %}
+    </table>
+    {% endfor %}
+    
+      
 
 
 </body>

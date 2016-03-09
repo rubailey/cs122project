@@ -3,25 +3,23 @@
     <title>Search</title>
 </head>
 <body>
-    {% if error %}
-        <p style="color: red;"> Please submit a search term.</p>
+    {% if errors %}
+        <ul>
+            errors            
+        </ul>
     {% endif %}
+    
     <form action="/search/" method="get">
-        <p> Cusine: <input type="text" name="Cusine"</p>
+        <p> Cuisine: <input type="text" name="Cuisine"</p>
         <p> Menu Item: <input type="text" name="Menu_item"</p>
         <p> Address: <input type="text" name="Address"</p>
-        <p> Day of the Week:</p>
-        <input type ="radio" name="DoW" value="Monday" checked> Monday<br>
-        <input type ="radio" name="DoW" value="Tuesday"> Tuesday<br>
-        <input type ="radio" name="DoW" value="Wednesday"> Wednesday<br>
-        <input type ="radio" name="DoW" value="Thursday"> Thursday<br>
-        <input type ="radio" name="DoW" value="Friday"> Friday<br>
         <p> Where to eat: </p>
+            <input type="checkbox" name="Restaurants" value="Restaurants" checked> Restaurants<br>
             <input type="checkbox" name="Food_trucks" value ="Food_trucks" checked> Food Trucks <br> 
             <input type="checkbox" name="Dining_hall" value="Dining_hall" checked> Dining Hall<br> 
-            <input type="checkbox" name="Restaurants" value="Restaurants" checked> Restaurants<br>
-        <p> other parameters </p>
-        <input type="checkbox" name="inspection" Value=True> Failed Recent Inspeciton?<br>
+        <p> Other Parameters </p>
+        <input type="checkbox" name="inspection" Value=True> Failed Recent Inspection?<br>
+        <p> Max Walkking Time: <input type="text" name="walk_time"</p>
 
         <input type="submit" value="Search">
     </form>
