@@ -5,17 +5,34 @@
     <input type="submit" value="Search Again">
 
 
-    <p>Found The Following Lunch Options: </p>.
+    <p>Found The Following Lunch Options: </p>
     {% for table in food %}
-    <table style="width:100%">
-        {% for line in table %}
+    <table border="1" style="width:100%" >
+        
+
+        {% for line,bool in table %}
         <tr> 
-            {% for item in line %}
-            <td> {{ item }} </td>
+            {% for item,innertable in line %}
+            {% if bool %}
+                <th> {{ item }} </th>
+            {% else %}
+                {% if innertable %}
+                    <td>
+                    {% for menu in item %}
+                        <li> {{ menu }} </li>
+                    {% endfor %}
+                    </td>
+                {% else %}
+                    <td align ="center"> {{ item }} </td>
+                {% endif %}
+            {% endif %}
+
+
             {% endfor %}
         </tr>
         {% endfor %}
     </table>
+    <br> </br>
     {% endfor %}
     
       
