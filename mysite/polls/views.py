@@ -28,12 +28,14 @@ def search(request):
     request_dict['Menu_item'] = m
   else:
     request_dict['Menu_item'] = None
+    m = 'Food'
 
   if not request.GET['Address'] == '':
     a = request.GET['Address']
     request_dict['Address'] = a
   else:
     request_dict['Address'] = None
+    a = "UChicago"
 
   request_dict['Types'] = []
   if 'Food_trucks' in request.GET:
@@ -55,18 +57,14 @@ def search(request):
   
   if not request.GET['walk_time'] == '':
     wt = request.GET['walk_time']
-    if not type(wt) == int:
-      error.append("Please make Waking Time an integer value")
-    else:
-
-      request_dict['walk_time'] = wt
+    request_dict['walk_time'] = wt
   else:
     request_dict['walk_time'] = False
 
 
   if error == []:
     food = Food_search(request_dict)
-    return render(request, 'polls/search_results.html', {'food':food, 'query':m, 'location':a })
+    return render(request, 'polls/search_results.html', {'food':food, 'query':m, 'location':a})
   return render(request, 'polls/search_form.html', {'errors':error})
 
 def search_result(request):
