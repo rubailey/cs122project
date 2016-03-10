@@ -1,7 +1,5 @@
 from django import forms
 import sqlite3
-import sys
-sys.path.insert(0, '/home/student/cs122project/mysite')
 import yelpapi
 import menu_scraper
 import dining_scraper
@@ -11,7 +9,7 @@ DEFAULT_WALK_TIME = 25
 DEFAULT_ADDRESS = '1100 E 57th St, Chicago, IL'
 def Food_search(search_params):
     '''
-    takes a dictionary of search parameters and returns a list of food_option objects
+    takes a dictionary of search parameters and returns a list of lists of lists
     '''
     rv = []
 
@@ -105,32 +103,26 @@ def Food_search(search_params):
             options_ft[0].append('Menu Items')
         rv.append(options_ft)
 
-
-
-
         
 
     if 'Dining_hall' in search_params['Types']:
-        header, options = find_dining_halls(address)
-        
+        header, options, menus = find_dining_halls(address)
+        options_dh = [header]
+        if not menu_item == None:
+            header.append("Menu Items")
+            for i in range(len(options)):
+                items = dining_scraper.search_menu(menus[i], menu_item)
+                if items == []:
+                    items = "No Menu Items Matched"
+                elif len(items) > 5:
+                    items = items[:5]
+                options[i].append(items)
+                options_dh.append(options[i])
+        rv.append(options_dh)
 
     return rv
 
-class food_option(object):
-    def __init__(self, line):
-        '''
-        takes in a result from a sqlite3 search and gives a class object where self.result
-        is in the form which we want to return
-        '''
-        # needed?
-        self.params = line
-        self.address = None
-        self.name = None
 
-class SearchForm(forms.Form):
-    Cuisine = forms.CharField()
-    Menu_item = forms.CharField()
-    Address = forms.CharField()
 
 def find_restaurants(address, cuisine, walk_time, inspection, rating=None):
     '''
@@ -189,19 +181,25 @@ def get_dining_hall(hall, address):
         menu = dining_scraper.find_dining_menu_items(hall, "Brunch")
     dh_addr = addresses[hall] + ", Chicago"
     dist, time = google_dist.get_distance(address, dh_addr)
-    if not 'hour' in walking_time:
+    if not 'hour' in time:
         time = int(time.split()[0])
     else:
-        time = 60*int(walking_time.split()[0]) + int(walking_time.split()[2])
+        time = 60*int(time.split()[0]) + int(time.split()[2])
            
-    return [hall + " Dining Hall", addresses[hall], time]
+    return [hall + " Dining Hall", addresses[hall], time], menu
 
 def find_dining_halls(address):
     header = ['Dining Hall', 'Address', 'Walking Time']
     tuple_list = []
-    tuple_list.append(get_dining_hall("Bartlett", address))
-    tuple_list.append(get_dining_hall("South", address))
-    return (header, tuple_list)
+    menu_list = []
+    b_list, b_menu = get_dining_hall("Bartlett", address)
+    s_list, s_menu = get_dining_hall("South", address)
+    tuple_list.append(b_list)
+    tuple_list.append(s_list)
+    menu_list.append(b_menu)
+    menu_list.append(s_menu)
+
+    return (header, tuple_list, menu_list)
 
 
 def drop():

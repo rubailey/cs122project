@@ -61,5 +61,6 @@ def search_menu(menu, search_item):
         lc_item = item.lower()
         lc_search = search_item.lower()
         if lc_search in lc_item:
-            return_list.append(item)
+            if item not in return_list:
+                return_list.append(item)
     return return_list
