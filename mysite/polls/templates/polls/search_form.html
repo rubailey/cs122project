@@ -5,7 +5,7 @@
 <body>
     {% if errors %}
         <ul>
-            errors            
+            {{ errors }}           
         </ul>
     {% endif %}
     
@@ -17,10 +17,17 @@
             <input type="checkbox" name="Restaurants" value="Restaurants" checked> Restaurants<br>
             <input type="checkbox" name="Food_trucks" value ="Food_trucks" checked> Food Trucks <br> 
             <input type="checkbox" name="Dining_hall" value="Dining_hall" checked> Dining Hall<br> 
-        <p> Other Parameters </p>
-        <input type="checkbox" name="inspection" Value=True> Failed Recent Inspection?<br>
-        <p> Max Walkking Time: <input type="text" name="walk_time"</p>
-
+        <p> Other Parameters: </p>
+        <input type="checkbox" name="inspection" Value=True> Check If Failed Recent Inspection?<br>
+        <p> Max Walking Time: <input type="text" name="walk_time"</p><br>
+        Minimum Rating:
+        <select name="Rating">
+            <option value = 1>1</option>
+            <option value = 2>2</option>
+            <option value = 3>3</option>
+            <option value = 4>4</option>
+            <option value = 5>5</option>
+        </select><br>
         <input type="submit" value="Search">
     </form>
 </body>

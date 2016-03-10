@@ -27,6 +27,8 @@ def Food_search(search_params):
     walk_time = search_params['walk_time']
 
     inspection = search_params['inspection']
+
+    rating = search_params['Rating']
     if walk_time == False:
         walk_time = DEFAULT_WALK_TIME
 
@@ -47,8 +49,10 @@ def Food_search(search_params):
                     truck_dict[name] = (url)
         
     if 'Restaurants' in search_params['Types']:
-        header, options = find_restaurants(address, cuisine, walk_time, inspection)
+        header, options = find_restaurants(address, cuisine, walk_time, inspection, rating)
         options_r = [(header, True)]
+        if options == []:
+            options_r.append(("No Restaurants in Hyde Park Matched Your Search",True))
         appended_list = []
         for op in options:
             if not op[0] in appended_list:
@@ -78,8 +82,10 @@ def Food_search(search_params):
         rv.append(options_r)
 
     if 'Food_trucks' in search_params['Types']:
-        header, options = find_food_trucks(address, cuisine, walk_time)
+        header, options = find_food_trucks(address, cuisine, walk_time, rating)
         options_ft = [(header, True)]
+        if options == []:
+            options_ft.append(("No Currently Available Food Trucks Matched Your Search",True))
         appended_list = []
         for op in options:
             if not op[0] in appended_list:
@@ -112,19 +118,19 @@ def Food_search(search_params):
         options_dh = [(header, True)]
         if not menu_item == None:
             header.append(("Menu Items", False))
-            for i in range(len(options)):
-                mini_list = []
-                for x in range(len(options[i])):
-                    mini_list.append((options[i][x], False))
+        for i in range(len(options)):
+            mini_list = []
+            for x in range(len(options[i])):
+                mini_list.append((options[i][x], False))
 
-                if not menu_item == None:
-                    items = dining_scraper.search_menu(menus[i], menu_item)
-                    if items == []:
-                        items = ["No Menu Items Matched"]
-                    elif len(items) > 5:
-                        items = items[:5]
-                    mini_list.append((items, True))
-                options_dh.append((mini_list, False))
+            if not menu_item == None:
+                items = dining_scraper.search_menu(menus[i], menu_item)
+                if items == []:
+                    items = ["No Menu Items Matched"]
+                elif len(items) > 5:
+                    items = items[:5]
+                mini_list.append((items, True))
+            options_dh.append((mini_list, False))
         print (options_dh)
         rv.append(options_dh)
 
@@ -151,7 +157,7 @@ def find_restaurants(address, cuisine, walk_time, inspection, rating=None):
     whereline = ' WHERE yelp_results.walking_time < ?'
     if inspection:
         selectline += ', healthfails.Risk'
-        header.append('Risk')
+        header.append(('Risk', False))
         fromline += ' LEFT OUTER JOIN healthfails ON yelp_results.address=healthfails.Address COLLATE NOCASE'
 
     end_list = [walk_time]

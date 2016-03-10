@@ -2,7 +2,9 @@
 <body>
     <p> You searched for: <strong> {{ query }}</strong> near {{ location }}</p>
 
-    <input type="submit" value="Search Again">
+    <form action="/search_form/" method="get">
+        <input type="submit" value="Search Again">
+    </form>
 
 
     <p>Found The Following Lunch Options: </p>

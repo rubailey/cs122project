@@ -15,13 +15,13 @@ def search_form(request):
   return render(request, 'polls/search_form.html')
 
 def search(request):
-  error = []
+  error = None
   request_dict = {}
   if not request.GET['Cuisine'] == '':
     c = request.GET['Cuisine']
     request_dict['Cuisine'] = c
   else:
-    request_dict['Cusine'] = None
+    request_dict['Cuisine'] = None
   
   if not request.GET['Menu_item'] == '':
     m = request.GET['Menu_item']
@@ -48,7 +48,7 @@ def search(request):
     r = request.GET['Restaurants']
     request_dict['Types'].append(r)
   if request_dict['Types'] == []:
-    error.append("Please Choose at least one of Restaurants, Food Trucks or Dinings Halls")
+    error = "Please Choose at least one of Restaurants, Food Trucks or Dining Halls"
   
   if 'inspection' in request.GET:
     request_dict['inspection'] = True
@@ -60,9 +60,10 @@ def search(request):
     request_dict['walk_time'] = wt
   else:
     request_dict['walk_time'] = False
+  request_dict['Rating'] = request.GET['Rating']
 
 
-  if error == []:
+  if error == None:
     food = Food_search(request_dict)
     return render(request, 'polls/search_results.html', {'food':food, 'query':m, 'location':a})
   return render(request, 'polls/search_form.html', {'errors':error})
