@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+#all of this code was downloaded when doing the djangoproject.com tutorial
 import os
 import sys
 

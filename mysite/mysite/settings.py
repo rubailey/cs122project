@@ -1,3 +1,4 @@
+#from djangoproject tutorial
 """
 Django settings for mysite project.
 

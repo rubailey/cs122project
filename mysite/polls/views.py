@@ -11,12 +11,18 @@ sys.path.insert(0, '/home/student/cs122project')
 
 
 def search_form(request):
-   
+  #calls html teplate for search_form
   return render(request, 'polls/search_form.html')
 
 def search(request):
+  '''
+  goes through each possible imput, if in request.GET adds to dictionary with what the user inputed
+  if not in request.GET adds to dicitonary with a null or default value
+  '''
   error = None
   request_dict = {}
+  
+
   if not request.GET['Cuisine'] == '':
     c = request.GET['Cuisine']
     request_dict['Cuisine'] = c
@@ -47,6 +53,8 @@ def search(request):
   if 'Restaurants' in request.GET:
     r = request.GET['Restaurants']
     request_dict['Types'].append(r)
+  
+  #creates error if none of trucks, dinnig halls or restaurants was chosen
   if request_dict['Types'] == []:
     error = "Please Choose at least one of Restaurants, Food Trucks or Dining Halls"
   
@@ -62,34 +70,16 @@ def search(request):
     request_dict['walk_time'] = False
   request_dict['Rating'] = request.GET['Rating']
 
-
+  #if an error was not found
   if error == None:
     food = Food_search(request_dict)
     return render(request, 'polls/search_results.html', {'food':food, 'query':m, 'location':a})
+  
+  #returns to search form and shows the error
   return render(request, 'polls/search_form.html', {'errors':error})
 
 def search_result(request):
+  #search again button in search result goes back to empty search form
   return render(request, 'polls/search_form.html')
 
 
-
-#class SearchForm(forms.Form):
-
-#def detail(request, question_id):
-#    question = get_object_or_404(Question, pk=question_id)
-#    return render(request, 'polls/detail.html', {'question': question})
-
-#def results(request, question_id):
- #   response = "You're looking at the results of question %s."
-  #  return HttpResponse(response % question_id)
-
-#def vote(request, question_id):
- #   return HttpResponse("You're voting on question %s." % question_id)
-
-#def index(request):
- #   latest_question_list = Question.objects.order_by('-pub_date')[:5]
-  #  template = loader.get_template('polls/index.html')
-   # context = {
-    #    'latest_question_list': latest_question_list,
-    #}
-    #return HttpResponse(template.render(context, request))

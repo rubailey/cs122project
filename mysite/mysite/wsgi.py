@@ -1,3 +1,4 @@
+#from djangoproject tutorial
 """
 WSGI config for mysite project.
 

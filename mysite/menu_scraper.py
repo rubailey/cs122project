@@ -1,3 +1,8 @@
+'''
+This code is all original
+Contains code for scraping menupages for menus and csv creation
+'''
+
 import requests
 import bs4
 import dining_scraper
@@ -19,6 +24,7 @@ def scrape_rest(rest_dict, addr):
         If there is no data in menupages for the restaurant (either no result for the address or
             a blank menu), function returns the string "No Menu Information Available"
     '''
+
 
     # if no menupages entry for restaurant
     if not addr in rest_dict:

@@ -1,4 +1,5 @@
 <html>
+<!-- code partially adapted from djangobook.com and used w3schools.com for help-->
 <body>
     <p> You searched for: <strong> {{ query }}</strong> near {{ location }}</p>
 
@@ -8,6 +9,7 @@
 
 
     <p>Found The Following Lunch Options: </p>
+    <!-- loops over the table returned by Food_search -->
     {% for table in food %}
     <table border="1" style="width:100%" >
         

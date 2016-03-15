@@ -1,14 +1,6 @@
 '''
-URLs: "http://univofchicago.campusdish.com/Commerce/Catalog/Menus.aspx?LocationId=XXXX&PeriodId=YYYY"
-XXXX:
-Bartlett: 1630
-South: 1604
-
-YYYY:
-Breakfast(M,T,W,R,F): 296
-Lunch(M,T,W,R,F): 297
-Dinner (U,M,T,W,R,F): 298
-Brunch (S,U): 1881
+All original code
+Contains code to scrape dining halls menus, and to search any menu for a term
 '''
 
 import bs4
