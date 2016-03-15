@@ -31,7 +31,6 @@ def Food_search(search_params):
 
     rating = search_params['Rating']
 
-    #menu_scraper.fix_healthresults("yelp_database")
 
     if walk_time == False:
         walk_time = DEFAULT_WALK_TIME

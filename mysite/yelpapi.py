@@ -43,8 +43,8 @@ def yelp_search(location, term=None, coordinates=False):
     db.execute(table_string)
 
     for i in range(len(results.businesses)):
-        print(results.businesses[i].name)
-        print(results.businesses[i].location.address)
+        #3(results.businesses[i].name)
+        #print(results.businesses[i].location.address)
         if not(results.businesses[i].location.coordinate == None or results.businesses[i].location.address == []):
             distance, walking_time = get_distance(location, results.businesses[i].location.address[0] +", "+ results.businesses[i].location.city)
             if not 'hour' in walking_time:
