@@ -2,10 +2,11 @@ import requests
 import bs4
 import dining_scraper
 import re
+import sqlite3
 
 def scrape_rest(rest_dict, addr):
     '''
-    Finds a restaurant's menu given its url and address
+    Takes a dictionary of restaurants with 
     '''
     if not addr in rest_dict:
         return "No Menu Information Available"
@@ -15,10 +16,16 @@ def scrape_rest(rest_dict, addr):
     r = requests.get(url, headers=headers)
     page = r.text
     soup = bs4.BeautifulSoup(page, "html5lib")
-    items = soup.find_all('cite')
+    m_items = soup.find_all('cite')
+    h_items = soup.find_all('h3')
     menu = []
-    for item in items:
+    for item in m_items:
         menu.append(item.text)
+    # removes "Now serving" at top of all menupages pages
+    for item in h_items[1:]:
+        menu.append(item.text)
+    if menu == []:
+        return "No Menu Information Available"
     return menu
 
 def find_rest_list():
@@ -62,3 +69,4 @@ def make_food_truck_csv():
     with open("food_truck_menus.csv","w") as f:
         for key in food_truck_URLs:
             f.write(key + ", " + food_truck_URLs[key] + "\n")
+

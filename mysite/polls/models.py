@@ -14,6 +14,7 @@ def Food_search(search_params):
     rv = []
 
     #drop()
+    #yelpapi.drop_yelp_table('yelp_food_trucks')
     if search_params['Address'] == None:
         address = DEFAULT_ADDRESS
     else:
@@ -29,6 +30,9 @@ def Food_search(search_params):
     inspection = search_params['inspection']
 
     rating = search_params['Rating']
+
+    #menu_scraper.fix_healthresults("yelp_database")
+
     if walk_time == False:
         walk_time = DEFAULT_WALK_TIME
 
@@ -84,8 +88,8 @@ def Food_search(search_params):
     if 'Food_trucks' in search_params['Types']:
         header, options = find_food_trucks(address, cuisine, walk_time, rating)
         options_ft = [(header, True)]
-        if options == []:
-            options_ft.append(("No Currently Available Food Trucks Matched Your Search",True))
+        #if options == []:
+            #soptions_ft.append(("No Currently Available Food Trucks Matched Your Search",True))
         appended_list = []
         for op in options:
             if not op[0] in appended_list:
@@ -107,7 +111,7 @@ def Food_search(search_params):
                 appended_list.append(op[0])
         if not menu_item == None:
             options_ft[0][0].append(('Menu Items', False))
-        print (options_ft)
+        #print (options_ft)
         rv.append(options_ft)
 
         
@@ -131,7 +135,7 @@ def Food_search(search_params):
                     items = items[:5]
                 mini_list.append((items, True))
             options_dh.append((mini_list, False))
-        print (options_dh)
+        #print (options_dh)
         rv.append(options_dh)
 
     return rv
@@ -153,6 +157,7 @@ def find_restaurants(address, cuisine, walk_time, inspection, rating=None):
     for i in range(len(header_list)):
         header.append((header_list[i], False))
 
+
     fromline = ' FROM yelp_results'
     whereline = ' WHERE yelp_results.walking_time < ?'
     if inspection:
@@ -164,7 +169,7 @@ def find_restaurants(address, cuisine, walk_time, inspection, rating=None):
     if not rating == None:
         whereline += ' and yelp_results.rating >= ?'
         end_list.append(rating)
-    print(selectline + fromline + whereline, [walk_time])
+    #print(selectline + fromline + whereline, [walk_time])
     r = db.execute(selectline + fromline + whereline + ';', end_list)
     tuple_list = r.fetchall()
     yelpapi.drop_yelp_table("yelp_results")
@@ -187,7 +192,7 @@ def find_food_trucks(address, cuisine, walking_time, rating = None):
     if not rating == None:
         whereline += ' and yelp_food_trucks.rating >= ?'
         end_list.append(rating)
-    print(selectline + fromline + whereline + ';', end_list)
+    #print(selectline + fromline + whereline + ';', end_list)
     r=db.execute(selectline + fromline + whereline + ';', end_list)
     tuple_list = r.fetchall()
     db.close()
